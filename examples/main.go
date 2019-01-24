@@ -9,7 +9,7 @@ import (
 )
 
 type Person struct {
-	IdPerson  int    `json:"id_person" db.read:"id_person"`
+	IdPerson  int    `json:"id_person" db:"id_person"`
 	FirstName string `json:"first_name" db:"first_name"`
 	LastName  string `json:"last_name" db:"last_name"`
 	Age       int    `json:"age" db:"age"`
@@ -38,15 +38,29 @@ func main() {
 }
 
 func Search() {
-	data := []Person{}
-	result, err := searcher.NewDatabaseSearch(db.Select("*").From("public.person")).Bind(&data).Page(2).Size(2).Exec()
+
+	result, err := searcher.NewDatabaseSearch(
+		db.Select("*").
+			From("public.person").
+			OrderAsc("id_person")).
+		Bind(&[]Person{}).
+		Path("http://teste.pt").
+		Page(1).
+		Size(3).
+		Metadata("my-meta",
+			db.Select("*").
+				From("public.person").
+				OrderAsc("id_person"),
+			&[]Person{}).
+		Exec()
+
 	if err != nil {
 		panic(err)
 	}
 
 	if result != nil {
 		b, _ := json.MarshalIndent(result, "", "\t")
-		fmt.Printf("\n\nResult: %s", string(b))
+		fmt.Printf("\n\nSearch: %s", string(b))
 	}
 }
 

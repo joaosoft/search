@@ -14,45 +14,58 @@ func newDatabaseClient(stmt *dbr.StmtSelect) *DatabaseClient {
 	return &DatabaseClient{StmtSelect: stmt}
 }
 
-func (client *DatabaseClient) Exec(query map[string]string, search *string, filters []string, orders orders, page int, size int, object interface{}) (int, error) {
+func (client *DatabaseClient) Exec(searchData *searchData) (int, error) {
+	var err error
 
 	// query
-	for key, value := range query {
+	for key, value := range searchData.query {
 		client.Where(key, value)
 	}
 
 	// filters and search
-	for _, filter := range filters {
-		if search != nil {
-			client.Where(fmt.Sprintf("%s ILIKE %s", filter, fmt.Sprintf("%%s%", search)))
+	for _, filter := range searchData.filters {
+		if searchData.search != nil {
+			client.Where(fmt.Sprintf("%s ILIKE %s", filter, *searchData.search))
 		}
 	}
 
-	stmtSelect, err := client.Build()
+	total := 0
+	_, err = client.Dbr.Select("count(1)").From(dbr.As(client.StmtSelect, "search")).Load(&total)
+
 	if err != nil {
 		return 0, err
 	}
 
-	client.Dbr.Select("count(1)").From(dbr.Field(stmtSelect).As("search"))
-
-	// pagination
-	if size > 0 {
-		client.Limit(size)
-	}
-
-	if page > 0 {
-		client.Offset(page * size)
-	}
-
-	// order by
-	for _, order := range orders {
-		switch order.direction {
-		case orderAsc:
-			client.OrderAsc(order.column)
-		case orderDesc:
-			client.OrderDesc(order.column)
+	if total > 0 {
+		// pagination
+		if searchData.size > 0 {
+			client.Limit(searchData.size)
 		}
+
+		if searchData.page > 0 {
+			client.Offset((searchData.page - 1) * searchData.size)
+		}
+
+		// order by
+		for _, order := range searchData.orders {
+			switch order.direction {
+			case orderAsc:
+				client.OrderAsc(order.column)
+			case orderDesc:
+				client.OrderDesc(order.column)
+			}
+		}
+
+		_, err := client.Load(searchData.object)
+
+		// load metadata
+		for _, item := range searchData.metadata {
+			if stmt, ok := item.stmt.(*dbr.StmtSelect); ok {
+				stmt.Load(item.object)
+			}
+		}
+		return total, err
 	}
 
-	return client.Load(object)
+	return 0, err
 }

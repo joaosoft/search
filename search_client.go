@@ -1,5 +1,17 @@
 package search
 
 type searchClient interface {
-	Exec(query map[string]string, search *string, filters []string, orders orders, page int, size int, object interface{}) (int, error)
+	Exec(searchData *searchData) (int, error)
+}
+
+type searchData struct {
+	path    string
+	query   map[string]string
+	search  *string
+	filters []string
+	orders  orders
+	page    int
+	size    int
+	object  interface{}
+	metadata map[string]*metadata
 }

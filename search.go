@@ -14,15 +14,16 @@ type Search struct {
 }
 
 type searchResult struct {
-	Data       interface{} `json:"data"`
+	Result     interface{} `json:"result"`
+	Metadata   interface{} `json:"metadata"`
 	Pagination *pagination `json:"pagination"`
 }
 
 type pagination struct {
-	First    string `json:"first"`
-	Previous string `json:"previous"`
-	Next     string `json:"next"`
-	Last     string `json:"last"`
+	First    *string `json:"first"`
+	Previous *string `json:"previous"`
+	Next     *string `json:"next"`
+	Last     *string `json:"last"`
 }
 
 // New ...

@@ -6,7 +6,7 @@ type ElasticClient struct {
 	elastic.Elastic
 }
 
-func (client *ElasticClient) Exec(query map[string]string, search *string, filters []string, orders orders, page int, size int, object interface{}) (int, error) {
+func (client *ElasticClient) Exec(searchData *searchData) (int, error) {
 
-	return 0, client.Search().Query("").Object(object).Execute()
+	return 0, client.Search().Query("").Object(searchData.object).Execute()
 }
