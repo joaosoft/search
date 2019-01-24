@@ -52,7 +52,7 @@
   branch = "master"
   name = "github.com/joaosoft/dbr"
   packages = ["."]
-  revision = "922c5c29fdfbecb27166dd9575febbb5591b90ee"
+  revision = "d3c90e2721dab5c8aef81f6576f7b7f98ed7a25b"
 
 [[projects]]
   branch = "master"
@@ -64,7 +64,7 @@
   branch = "master"
   name = "github.com/joaosoft/errors"
   packages = ["."]
-  revision = "fdf3056873e72340b59c5b286ca94b07ae6fcf37"
+  revision = "14ce6b432e14373c6039c7d9fc6141aaec90fdbf"
 
 [[projects]]
   branch = "master"
@@ -76,19 +76,19 @@
   branch = "master"
   name = "github.com/joaosoft/manager"
   packages = ["."]
-  revision = "e87747bfcc071131cb47f6270d5b52135bcfb4d2"
+  revision = "18b4eb1be4cbb9e55a90e05f5e2ebc4db0afb15f"
 
 [[projects]]
   branch = "master"
   name = "github.com/joaosoft/web"
   packages = ["."]
-  revision = "e35184df0822c622df91f8fca56cd32ba1eabd20"
+  revision = "5b647e6319f5f6c3e86168566e105d9da920d623"
 
 [[projects]]
   branch = "master"
   name = "github.com/joaosoft/writers"
   packages = ["."]
-  revision = "97aea5d1a3ec5b6907403c1dfea21cbcf8369d89"
+  revision = "e7f81b49284c35354b23b3ce8fe113dd9552a0b7"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -214,13 +214,13 @@
     "acme",
     "acme/autocert"
   ]
-  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
+  revision = "057139ce5d2bdbe6fe73c53679e24e9cf007f637"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "82a175fd1598e8a172e58ebdf5ed262bb29129e5"
+  revision = "b90733256f2e882e81d52f9126de08df5615afd9"
 
 [[projects]]
   name = "golang.org/x/text"

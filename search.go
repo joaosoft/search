@@ -1,6 +1,7 @@
 package search
 
 import (
+	"github.com/joaosoft/dbr"
 	"github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
 )
@@ -13,15 +14,15 @@ type Search struct {
 }
 
 type searchResult struct {
-	data       interface{}
-	pagination *pagination
+	Data       interface{} `json:"data"`
+	Pagination *pagination `json:"pagination"`
 }
 
 type pagination struct {
-	first    string
-	previous string
-	next     string
-	last     string
+	First    string `json:"first"`
+	Previous string `json:"previous"`
+	Next     string `json:"next"`
+	Last     string `json:"last"`
 }
 
 // New ...
@@ -52,6 +53,6 @@ func New(options ...SearchOption) (*Search, error) {
 	return search, nil
 }
 
-func (search *Search) NewSearch(client searchClient) *searchHandler {
-	return newSearchHandler(client)
+func (search *Search) NewDatabaseSearch(stmt *dbr.StmtSelect) *searchHandler {
+	return newSearchHandler(newDatabaseClient(stmt))
 }

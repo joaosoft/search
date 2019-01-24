@@ -1,30 +1,23 @@
 package search
 
 import (
+	"fmt"
 	"strconv"
-
-	"github.com/joaosoft/dbr"
 )
 
 type searchHandler struct {
-	client     searchClient
-	selectStmt *dbr.StmtSelect
-	query      map[string]string
-	search     *string
-	filters    []string
-	orders     orders
-	page       int
-	size       int
-	object     interface{}
+	client  searchClient
+	query   map[string]string
+	search  *string
+	filters []string
+	orders  orders
+	page    int
+	size    int
+	object  interface{}
 }
 
 func newSearchHandler(client searchClient) *searchHandler {
 	return &searchHandler{client: client, query: make(map[string]string)}
-}
-
-func (searchHandler *searchHandler) Builder(selectStmt *dbr.StmtSelect) *searchHandler {
-	searchHandler.selectStmt = selectStmt
-	return searchHandler
 }
 
 func (searchHandler *searchHandler) Query(query map[string]string) *searchHandler {
@@ -75,9 +68,8 @@ func (searchHandler *searchHandler) Bind(object interface{}) *searchHandler {
 }
 
 func (searchHandler *searchHandler) Exec() (*searchResult, error) {
-	err := searchHandler.client.
-		Exec(searchHandler.selectStmt,
-			searchHandler.query,
+	count, err := searchHandler.client.
+		Exec(searchHandler.query,
 			searchHandler.search,
 			searchHandler.filters,
 			searchHandler.orders,
@@ -86,7 +78,12 @@ func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 			searchHandler.object)
 
 	return &searchResult{
-		data:       searchHandler.object,
-		pagination: &pagination{},
+		Data: searchHandler.object,
+		Pagination: &pagination{
+			First:    fmt.Sprintf("?page=%d&size=%d", count, count),
+			Previous: fmt.Sprintf("?page=%d&size=%d", count, count),
+			Next:     fmt.Sprintf("?page=%d&size=%d", count, count),
+			Last:     fmt.Sprintf("?page=%d&size=%d", count, count),
+		},
 	}, err
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"search"
 
 	"github.com/joaosoft/dbr"
 )
@@ -11,7 +13,8 @@ type Person struct {
 	FirstName string `json:"first_name" db:"first_name"`
 	LastName  string `json:"last_name" db:"last_name"`
 	Age       int    `json:"age" db:"age"`
-	IdAddress *int   `json:"fk_address" db:"fk_address"`
+	Active    bool   `json:"active" db:"active"`
+	IdAddress int    `json:"fk_address" db:"fk_address"`
 }
 
 type Address struct {
@@ -22,72 +25,76 @@ type Address struct {
 }
 
 var db, _ = dbr.New()
+var searcher, _ = search.New()
 
 func main() {
 	DeleteAll()
 
 	Insert()
 
+	Search()
+
 	DeleteAll()
+}
+
+func Search() {
+	data := []Person{}
+	result, err := searcher.NewDatabaseSearch(db.Select("*").From("public.person")).Bind(&data).Page(2).Size(2).Exec()
+	if err != nil {
+		panic(err)
+	}
+
+	if result != nil {
+		b, _ := json.MarshalIndent(result, "", "\t")
+		fmt.Printf("\n\nResult: %s", string(b))
+	}
 }
 
 func Insert() {
 	fmt.Println("\n\n:: INSERT")
 
-	person := Person{
-		FirstName: "joao",
-		LastName:  "ribeiro",
-		Age:       30,
+	address := Address{
+		IdAddress: 1,
+		Street:    "rua dos testes",
+		Number:    1,
+		Country:   "portugal",
 	}
-
-	stmt := db.Insert().
-		Into(dbr.Field("public.person").As("new_name")).
-		Record(person)
-
-	query, err := stmt.Build()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("\nQUERY: %s", query)
-
-	_, err = stmt.Exec()
-	if err != nil {
+	if _, err := db.Insert().
+		Into("public.address").
+		Record(address).Exec(); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("\nSAVED PERSON: %+v", person)
+	for i := 1; i <= 20; i++ {
+		person := Person{
+			IdPerson:  i,
+			FirstName: "joao",
+			LastName:  "ribeiro",
+			Age:       i,
+			IdAddress: 1,
+		}
+
+		if _, err := db.Insert().
+			Into("public.person").
+			Record(person).Exec(); err != nil {
+			panic(err)
+		}
+	}
+	fmt.Printf("\nINSERTED")
 }
 
 func DeleteAll() {
 	fmt.Println("\n\n:: DELETE")
 
-	stmt := db.Delete().
-		From("public.person")
-
-	query, err := stmt.Build()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("\nQUERY: %s", query)
-
-	_, err = stmt.Exec()
-	if err != nil {
+	if _, err := db.Delete().
+		From("public.person").Exec(); err != nil {
 		panic(err)
 	}
 
-	stmt = db.Delete().
-		From("public.address")
-
-	query, err = stmt.Build()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("\nQUERY: %s", query)
-
-	_, err = stmt.Exec()
-	if err != nil {
+	if _, err := db.Delete().
+		From("public.address").Exec(); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("\nDELETED ALL")
+	fmt.Printf("\nDELETED")
 }
