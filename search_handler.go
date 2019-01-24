@@ -7,16 +7,18 @@ import (
 )
 
 type searchHandler struct {
-	client   searchClient
-	path     string
-	query    map[string]string
-	search   *string
-	filters  []string
-	metadata map[string]*metadata
-	orders   orders
-	page     int
-	size     int
-	object   interface{}
+	client        searchClient
+	hasPagination bool
+	hasMetadata   bool
+	path          string
+	query         map[string]string
+	search        *string
+	filters       []string
+	metadata      map[string]*metadata
+	orders        orders
+	page          int
+	size          int
+	object        interface{}
 }
 
 type metadata struct {
@@ -25,7 +27,13 @@ type metadata struct {
 }
 
 func newSearchHandler(client searchClient) *searchHandler {
-	return &searchHandler{client: client, query: make(map[string]string), metadata: make(map[string]*metadata)}
+	return &searchHandler{
+		client:        client,
+		query:         make(map[string]string),
+		metadata:      make(map[string]*metadata),
+		hasPagination: true,
+		hasMetadata:   true,
+	}
 }
 
 func (searchHandler *searchHandler) Query(query map[string]string) *searchHandler {
@@ -47,6 +55,16 @@ func (searchHandler *searchHandler) Query(query map[string]string) *searchHandle
 
 func (searchHandler *searchHandler) Filters(fields ...string) *searchHandler {
 	searchHandler.filters = fields
+	return searchHandler
+}
+
+func (searchHandler *searchHandler) WithoutPagination() *searchHandler {
+	searchHandler.hasPagination = false
+	return searchHandler
+}
+
+func (searchHandler *searchHandler) WithoutMetadata() *searchHandler {
+	searchHandler.hasMetadata = false
 	return searchHandler
 }
 
@@ -87,27 +105,40 @@ func (searchHandler *searchHandler) Bind(object interface{}) *searchHandler {
 
 func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 	searchData := &searchData{
-		path:     searchHandler.path,
-		query:    searchHandler.query,
-		search:   searchHandler.search,
-		filters:  searchHandler.filters,
-		orders:   searchHandler.orders,
-		page:     searchHandler.page,
-		size:     searchHandler.size,
-		object:   searchHandler.object,
-		metadata: searchHandler.metadata,
+		hasPagination: searchHandler.hasPagination,
+		hasMetadata:   searchHandler.hasMetadata,
+		path:          searchHandler.path,
+		query:         searchHandler.query,
+		search:        searchHandler.search,
+		filters:       searchHandler.filters,
+		orders:        searchHandler.orders,
+		page:          searchHandler.page,
+		size:          searchHandler.size,
+		object:        searchHandler.object,
+		metadata:      searchHandler.metadata,
 	}
 	total, err := searchHandler.client.Exec(searchData)
 
 	// metadata
-	metadata := make(map[string]interface{})
-	for name, item := range searchData.metadata {
-		metadata[name] = item.object
+	var metadata map[string]interface{}
+	if searchHandler.hasMetadata {
+		metadata = make(map[string]interface{})
+		for name, item := range searchData.metadata {
+			metadata[name] = item.object
+		}
 	}
+
+	// pagination
+	var pagination *pagination
+	if searchHandler.hasPagination {
+		pagination = newPagination(searchData, total)
+	}
+
+	// result
 	return &searchResult{
 		Result:     searchHandler.object,
 		Metadata:   metadata,
-		Pagination: newPagination(searchData, total),
+		Pagination: pagination,
 	}, err
 }
 

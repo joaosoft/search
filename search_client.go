@@ -5,13 +5,15 @@ type searchClient interface {
 }
 
 type searchData struct {
-	path    string
-	query   map[string]string
-	search  *string
-	filters []string
-	orders  orders
-	page    int
-	size    int
-	object  interface{}
-	metadata map[string]*metadata
+	hasPagination bool
+	hasMetadata   bool
+	path          string
+	query         map[string]string
+	search        *string
+	filters       []string
+	orders        orders
+	page          int
+	size          int
+	object        interface{}
+	metadata      map[string]*metadata
 }

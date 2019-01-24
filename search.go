@@ -16,8 +16,8 @@ type Search struct {
 
 type searchResult struct {
 	Result     interface{} `json:"result"`
-	Metadata   interface{} `json:"metadata"`
-	Pagination *pagination `json:"pagination"`
+	Metadata   interface{} `json:"metadata,omitempty"`
+	Pagination *pagination `json:"pagination,omitempty"`
 }
 
 type pagination struct {

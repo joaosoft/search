@@ -29,43 +29,48 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 		}
 	}
 
+	// pagination
 	total := 0
-	_, err = client.Dbr.Select("count(1)").From(dbr.As(client.StmtSelect, "search")).Load(&total)
+	if searchData.hasPagination {
+		_, err = client.Dbr.Select("count(1)").From(dbr.As(client.StmtSelect, "search")).Load(&total)
 
-	if err != nil {
-		return 0, err
+		if err != nil {
+			return 0, err
+		}
+
+		if total == 0 {
+			return 0, nil
+		}
 	}
 
-	if total > 0 {
-		// pagination
-		if searchData.size > 0 {
-			client.Limit(searchData.size)
+	if searchData.size > 0 {
+		client.Limit(searchData.size)
+	}
+
+	if searchData.page > 0 {
+		client.Offset((searchData.page - 1) * searchData.size)
+	}
+
+	// order by
+	for _, order := range searchData.orders {
+		switch order.direction {
+		case orderAsc:
+			client.OrderAsc(order.column)
+		case orderDesc:
+			client.OrderDesc(order.column)
 		}
+	}
 
-		if searchData.page > 0 {
-			client.Offset((searchData.page - 1) * searchData.size)
-		}
+	_, err = client.Load(searchData.object)
 
-		// order by
-		for _, order := range searchData.orders {
-			switch order.direction {
-			case orderAsc:
-				client.OrderAsc(order.column)
-			case orderDesc:
-				client.OrderDesc(order.column)
-			}
-		}
-
-		_, err := client.Load(searchData.object)
-
-		// load metadata
+	// metadata
+	if searchData.hasMetadata {
 		for _, item := range searchData.metadata {
 			if stmt, ok := item.stmt.(*dbr.StmtSelect); ok {
 				stmt.Load(item.object)
 			}
 		}
-		return total, err
 	}
 
-	return 0, err
+	return total, err
 }
