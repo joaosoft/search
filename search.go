@@ -2,6 +2,7 @@ package search
 
 import (
 	"github.com/joaosoft/dbr"
+	"github.com/joaosoft/elastic"
 	"github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
 )
@@ -56,4 +57,8 @@ func New(options ...SearchOption) (*Search, error) {
 
 func (search *Search) NewDatabaseSearch(stmt *dbr.StmtSelect) *searchHandler {
 	return newSearchHandler(newDatabaseClient(stmt))
+}
+
+func (search *Search) NewElasticSearch(stmt *elastic.SearchService) *searchHandler {
+	return newSearchHandler(newElasticClient(stmt))
 }

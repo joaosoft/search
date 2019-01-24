@@ -2,11 +2,14 @@ package search
 
 import "github.com/joaosoft/elastic"
 
-type ElasticClient struct {
-	elastic.Elastic
+type elasticClient struct {
+	*elastic.SearchService
 }
 
-func (client *ElasticClient) Exec(searchData *searchData) (int, error) {
+func newElasticClient(stmt *elastic.SearchService) *elasticClient {
+	return &elasticClient{SearchService: stmt}
+}
 
-	return 0, client.Search().Query("").Object(searchData.object).Execute()
+func (client *elasticClient) Exec(searchData *searchData) (int, error) {
+	return 0, client.Query("").Object(searchData.object).Execute()
 }

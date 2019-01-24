@@ -6,15 +6,15 @@ import (
 	"github.com/joaosoft/dbr"
 )
 
-type DatabaseClient struct {
+type databaseClient struct {
 	*dbr.StmtSelect
 }
 
-func newDatabaseClient(stmt *dbr.StmtSelect) *DatabaseClient {
-	return &DatabaseClient{StmtSelect: stmt}
+func newDatabaseClient(stmt *dbr.StmtSelect) *databaseClient {
+	return &databaseClient{StmtSelect: stmt}
 }
 
-func (client *DatabaseClient) Exec(searchData *searchData) (int, error) {
+func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 	var err error
 
 	// query
