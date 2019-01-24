@@ -137,10 +137,12 @@ func newPagination(searchData *searchData, total int) *pagination {
 
 		// last page
 		size := searchData.size
-		remainder := total % searchData.size
-		if remainder > 0 {
-			size = remainder
-		}
+
+		// calculate the remainder items on the last page
+		//remainder := total % searchData.size
+		//if remainder > 0 {
+		//	size = remainder
+		//}
 
 		last := fmt.Sprintf("%s?page=%d&size=%d", searchData.path, totalPages, size)
 		pagination.Last = &last
