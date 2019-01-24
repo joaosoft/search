@@ -12,6 +12,18 @@ type Search struct {
 	logger        logger.ILogger
 }
 
+type searchResult struct {
+	data       interface{}
+	pagination *pagination
+}
+
+type pagination struct {
+	first    string
+	previous string
+	next     string
+	last     string
+}
+
 // New ...
 func New(options ...SearchOption) (*Search, error) {
 	config, simpleConfig, err := NewConfig()
@@ -40,5 +52,6 @@ func New(options ...SearchOption) (*Search, error) {
 	return search, nil
 }
 
-func (search *Search) NewSearch() {
+func (search *Search) NewSearch(client searchClient) *searchHandler {
+	return newSearchHandler(client)
 }

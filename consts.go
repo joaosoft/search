@@ -1,3 +1,7 @@
 package search
 
-const ()
+const (
+	constPage   = "page"
+	constSize   = "size"
+	constSearch = "search"
+)
