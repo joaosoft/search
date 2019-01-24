@@ -3,7 +3,7 @@ search
 
 [![Build Status](https://travis-ci.org/joaosoft/search.svg?branch=master)](https://travis-ci.org/joaosoft/search) | [![codecov](https://codecov.io/gh/joaosoft/search/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/search) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/search)](https://goreportcard.com/report/github.com/joaosoft/search) | [![GoDoc](https://godoc.org/github.com/joaosoft/search?status.svg)](https://godoc.org/github.com/joaosoft/search)
 
-A simple tool that allows to you to search on database and elastic.
+A simple tool that allows to you to search with pagination on database and elastic.
 
 ###### If i miss something or you have something interesting, please be part of this project. Let me know! My contact is at the end.
 
