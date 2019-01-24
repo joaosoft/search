@@ -369,7 +369,7 @@ Search: {
 		"first": null,
 		"previous": null,
 		"next": "http://teste.pt?page=2\u0026size=3",
-		"last": "http://teste.pt?page=7\u0026size=2"
+		"last": "http://teste.pt?page=7\u0026size=3"
 	}
 }
 ```
