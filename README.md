@@ -120,7 +120,6 @@ func Search() {
 }
 
 func myMetadataFunction(result interface{}, object interface{}) error {
-	fmt.Printf("%+v", result)
 	if result != nil {
 		if persons, ok := result.([]Person); ok && len(persons) > 0 {
 			_, err := db.Select("*").
@@ -222,6 +221,16 @@ Search: {
 		}
 	],
 	"metadata": {
+		"my-function": [
+			{
+				"id_person": 1,
+				"first_name": "joao",
+				"last_name": "ribeiro",
+				"age": 1,
+				"active": false,
+				"fk_address": 1
+			}
+		],
 		"my-meta": [
 			{
 				"id_person": 1,
@@ -392,6 +401,10 @@ Search: {
 		"last": "http://teste.pt?page=7\u0026size=3"
 	}
 }
+
+:: DELETE
+
+DELETED
 ```
 
 ## Known issues

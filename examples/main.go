@@ -71,7 +71,6 @@ func Search() {
 }
 
 func myMetadataFunction(result interface{}, object interface{}) error {
-	fmt.Printf("%+v", result)
 	if result != nil {
 		if persons, ok := result.([]Person); ok && len(persons) > 0 {
 			_, err := db.Select("*").
