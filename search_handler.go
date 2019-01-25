@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"html"
 	"math"
 	"strconv"
 )
@@ -38,6 +39,8 @@ func newSearchHandler(client searchClient) *searchHandler {
 
 func (searchHandler *searchHandler) Query(query map[string]string) *searchHandler {
 	for key, value := range query {
+		value = html.UnescapeString(value)
+
 		switch key {
 		case constPage:
 			searchHandler.page, _ = strconv.Atoi(value)
