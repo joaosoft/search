@@ -19,6 +19,7 @@ type searchHandler struct {
 	orders        orders
 	page          int
 	size          int
+	maxSize       int
 	object        interface{}
 }
 
@@ -91,6 +92,11 @@ func (searchHandler *searchHandler) Page(page int) *searchHandler {
 	return searchHandler
 }
 
+func (searchHandler *searchHandler) MaxSize(maxSize int) *searchHandler {
+	searchHandler.maxSize = maxSize
+	return searchHandler
+}
+
 func (searchHandler *searchHandler) Path(path string) *searchHandler {
 	searchHandler.path = path
 	return searchHandler
@@ -107,6 +113,11 @@ func (searchHandler *searchHandler) Bind(object interface{}) *searchHandler {
 }
 
 func (searchHandler *searchHandler) Exec() (*searchResult, error) {
+
+	if searchHandler.maxSize > 0 && searchHandler.size > searchHandler.maxSize {
+		searchHandler.size = searchHandler.maxSize
+	}
+
 	searchData := &searchData{
 		hasPagination: searchHandler.hasPagination,
 		hasMetadata:   searchHandler.hasMetadata,
