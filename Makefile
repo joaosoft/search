@@ -1,7 +1,5 @@
 env:
-	docker-compose up -d dbr.postgres
-run:
-	go run ./main.go
+	docker-compose up -d home.postgres
 
 build:
 	go build .

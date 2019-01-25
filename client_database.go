@@ -19,14 +19,22 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 
 	// query
 	for key, value := range searchData.query {
-		client.Where(key, value)
+		client.Where(fmt.Sprintf("%s = ?", key), value)
 	}
 
 	// filters and search
-	for _, filter := range searchData.filters {
-		if searchData.search != nil {
-			client.Where(fmt.Sprintf("%s ILIKE %s", filter, *searchData.search))
+	lenF := len(searchData.filters)
+	if searchData.search != nil && lenF > 0 {
+		queryFilter := ""
+		for i, filter := range searchData.filters {
+			queryFilter += fmt.Sprintf("%s ILIKE %s", filter, client.Db.Dialect.Encode("%"+*searchData.search+"%"))
+
+			if i < lenF-1 {
+				queryFilter += " OR "
+			}
 		}
+
+		client.Where(fmt.Sprintf("(%s)", queryFilter))
 	}
 
 	// pagination
