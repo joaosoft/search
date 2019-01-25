@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/joaosoft/dbr"
 )
@@ -76,7 +77,7 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 		for _, item := range searchData.metadata {
 			// function
 			if item.function != nil {
-				if err = item.function(searchData.object, item.object); err != nil {
+				if err = item.function(reflect.ValueOf(searchData.object).Elem().Interface(), item.object); err != nil {
 					return 0, err
 				}
 			}

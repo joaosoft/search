@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"math"
+	"reflect"
 	"strconv"
 )
 
@@ -93,6 +94,9 @@ func (searchHandler *searchHandler) WithoutMetadata() *searchHandler {
 }
 
 func (searchHandler *searchHandler) Metadata(name string, stmt interface{}, object interface{}) *searchHandler {
+	if reflect.ValueOf(object).Kind() != reflect.Ptr {
+		panic(fmt.Sprintf("the object is not a pointer for the metadata %s", name))
+	}
 	searchHandler.metadata[name] = &metadata{stmt: stmt, object: object}
 	return searchHandler
 }

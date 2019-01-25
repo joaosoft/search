@@ -71,12 +71,18 @@ func Search() {
 }
 
 func myMetadataFunction(result interface{}, object interface{}) error {
-	_, err := db.Select("*").
-		From("public.person").
-		Where("id_person = ?", 1).
-		OrderAsc("id_person").
-		Load(object)
-	return err
+	fmt.Printf("%+v", result)
+	if result != nil {
+		if persons, ok := result.([]Person); ok && len(persons) > 0 {
+			_, err := db.Select("*").
+				From("public.person").
+				Where("id_person = ?", persons[0].IdPerson).
+				OrderAsc("id_person").
+				Load(object)
+			return err
+		}
+	}
+	return nil
 }
 
 func Insert() {
