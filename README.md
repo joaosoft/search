@@ -93,6 +93,9 @@ func Search() {
 		db.Select("*").
 			From("public.person").
 			OrderAsc("id_person")).
+		Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
+		Filters("first_name", "last_name").
+		Search("joao").
 		Bind(&[]Person{}).
 		Path("http://teste.pt").
 		Page(1).
