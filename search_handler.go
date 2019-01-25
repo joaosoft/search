@@ -14,7 +14,8 @@ type searchHandler struct {
 	path          string
 	query         map[string]string
 	search        *string
-	filters       []string
+	filters       map[string]string
+	searchFilters []string
 	metadata      map[string]*metadata
 	orders        orders
 	page          int
@@ -32,6 +33,8 @@ func newSearchHandler(client searchClient) *searchHandler {
 	return &searchHandler{
 		client:        client,
 		query:         make(map[string]string),
+		filters:       make(map[string]string),
+		searchFilters: make([]string, 0),
 		metadata:      make(map[string]*metadata),
 		hasPagination: true,
 		hasMetadata:   true,
@@ -50,7 +53,9 @@ func (searchHandler *searchHandler) Query(query map[string]string) *searchHandle
 		case constSearch:
 			searchHandler.search = &value
 		default:
-			searchHandler.query[key] = value
+			if filter, ok := searchHandler.filters[key]; ok {
+				searchHandler.query[key] = filter
+			}
 		}
 	}
 
@@ -58,7 +63,19 @@ func (searchHandler *searchHandler) Query(query map[string]string) *searchHandle
 }
 
 func (searchHandler *searchHandler) Filters(fields ...string) *searchHandler {
-	searchHandler.filters = fields
+	for _, field := range fields {
+		searchHandler.filters[field] = field
+	}
+	return searchHandler
+}
+
+func (searchHandler *searchHandler) Filter(searchName string, internalName string) *searchHandler {
+	searchHandler.filters[searchName] = internalName
+	return searchHandler
+}
+
+func (searchHandler *searchHandler) SearchFilters(fields ...string) *searchHandler {
+	searchHandler.searchFilters = append(searchHandler.searchFilters, fields...)
 	return searchHandler
 }
 
@@ -125,6 +142,7 @@ func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 		query:         searchHandler.query,
 		search:        searchHandler.search,
 		filters:       searchHandler.filters,
+		searchFilters: searchHandler.searchFilters,
 		orders:        searchHandler.orders,
 		page:          searchHandler.page,
 		size:          searchHandler.size,

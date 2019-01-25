@@ -22,14 +22,14 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 		client.Where(fmt.Sprintf("%s = ?", key), value)
 	}
 
-	// filters and search
-	lenF := len(searchData.filters)
-	if searchData.search != nil && lenF > 0 {
+	// search
+	lenQ := len(searchData.searchFilters)
+	if searchData.search != nil && lenQ > 0 {
 		queryFilter := ""
-		for i, filter := range searchData.filters {
+		for i, filter := range searchData.searchFilters {
 			queryFilter += fmt.Sprintf("%s ILIKE %s", filter, client.Db.Dialect.Encode("%"+*searchData.search+"%"))
 
-			if i < lenF-1 {
+			if i < lenQ - 1 {
 				queryFilter += " OR "
 			}
 		}
