@@ -30,7 +30,6 @@ go get github.com/joaosoft/search
 ```
 
 >### Configuration
->>#### master / slave
 ```
 {
   "search": {
