@@ -43,3 +43,10 @@ func WithManager(mgr *manager.Manager) SearchOption {
 		search.pm = mgr
 	}
 }
+
+// WithMaxSize ...
+func WithMaxSize(maxSize int) SearchOption {
+	return func(search *Search) {
+		search.maxSize = maxSize
+	}
+}

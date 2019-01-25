@@ -24,12 +24,15 @@ type searchHandler struct {
 	object        interface{}
 }
 
+type metadataFunction func(result interface{}, object interface{}) error
+
 type metadata struct {
-	stmt   interface{}
-	object interface{}
+	stmt     interface{}
+	function metadataFunction
+	object   interface{}
 }
 
-func newSearchHandler(client searchClient) *searchHandler {
+func (search *Search) newSearchHandler(client searchClient) *searchHandler {
 	return &searchHandler{
 		client:        client,
 		query:         make(map[string]string),
@@ -91,6 +94,11 @@ func (searchHandler *searchHandler) WithoutMetadata() *searchHandler {
 
 func (searchHandler *searchHandler) Metadata(name string, stmt interface{}, object interface{}) *searchHandler {
 	searchHandler.metadata[name] = &metadata{stmt: stmt, object: object}
+	return searchHandler
+}
+
+func (searchHandler *searchHandler) MetadataFunction(name string, function metadataFunction, object interface{}) *searchHandler {
+	searchHandler.metadata[name] = &metadata{function: function, object: object}
 	return searchHandler
 }
 

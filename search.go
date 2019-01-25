@@ -8,6 +8,7 @@ import (
 )
 
 type Search struct {
+	maxSize       int
 	config        *SearchConfig
 	isLogExternal bool
 	pm            *manager.Manager
@@ -56,9 +57,9 @@ func New(options ...SearchOption) (*Search, error) {
 }
 
 func (search *Search) NewDatabaseSearch(stmt *dbr.StmtSelect) *searchHandler {
-	return newSearchHandler(newDatabaseClient(stmt))
+	return search.newSearchHandler(search.newDatabaseClient(stmt))
 }
 
 func (search *Search) NewElasticSearch(stmt *elastic.SearchService) *searchHandler {
-	return newSearchHandler(newElasticClient(stmt))
+	return search.newSearchHandler(search.newElasticClient(stmt))
 }

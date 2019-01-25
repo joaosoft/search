@@ -6,7 +6,7 @@ type elasticClient struct {
 	*elastic.SearchService
 }
 
-func newElasticClient(stmt *elastic.SearchService) *elasticClient {
+func (search *Search) newElasticClient(stmt *elastic.SearchService) *elasticClient {
 	return &elasticClient{SearchService: stmt}
 }
 

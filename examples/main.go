@@ -57,6 +57,7 @@ func Search() {
 				From("public.person").
 				OrderAsc("id_person"),
 			&[]Person{}).
+		MetadataFunction("my-function", myMetadataFunction, &[]Person{}).
 		Exec()
 
 	if err != nil {
@@ -67,6 +68,15 @@ func Search() {
 		b, _ := json.MarshalIndent(result, "", "\t")
 		fmt.Printf("\n\nSearch: %s", string(b))
 	}
+}
+
+func myMetadataFunction(result interface{}, object interface{}) error {
+	_, err := db.Select("*").
+		From("public.person").
+		Where("id_person = ?", 1).
+		OrderAsc("id_person").
+		Load(object)
+	return err
 }
 
 func Insert() {

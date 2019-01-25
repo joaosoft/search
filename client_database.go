@@ -10,7 +10,7 @@ type databaseClient struct {
 	*dbr.StmtSelect
 }
 
-func newDatabaseClient(stmt *dbr.StmtSelect) *databaseClient {
+func (search *Search) newDatabaseClient(stmt *dbr.StmtSelect) *databaseClient {
 	return &databaseClient{StmtSelect: stmt}
 }
 
@@ -29,7 +29,7 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 		for i, filter := range searchData.searchFilters {
 			queryFilter += fmt.Sprintf("%s ILIKE %s", filter, client.Db.Dialect.Encode("%"+*searchData.search+"%"))
 
-			if i < lenQ - 1 {
+			if i < lenQ-1 {
 				queryFilter += " OR "
 			}
 		}
@@ -74,8 +74,18 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 	// metadata
 	if searchData.hasMetadata {
 		for _, item := range searchData.metadata {
-			if stmt, ok := item.stmt.(*dbr.StmtSelect); ok {
-				stmt.Load(item.object)
+			// function
+			if item.function != nil {
+				if err = item.function(searchData.object, item.object); err != nil {
+					return 0, err
+				}
+			}
+
+			// statement
+			if item.stmt != nil {
+				if stmt, ok := item.stmt.(*dbr.StmtSelect); ok {
+					stmt.Load(item.object)
+				}
 			}
 		}
 	}
