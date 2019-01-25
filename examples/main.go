@@ -50,6 +50,7 @@ func Search() {
 		Path("http://teste.pt").
 		Page(1).
 		Size(3).
+		MaxSize(10).
 		Metadata("my-meta",
 			db.Select("*").
 				From("public.person").
