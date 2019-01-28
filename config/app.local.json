@@ -16,5 +16,16 @@
     "log": {
       "level": "info"
     }
+  },
+  "elastic": {
+    "endpoint": "localhost:9201",
+    "log": {
+      "level": "debug"
+    }
+  },
+  "client": {
+    "log": {
+      "level": "debug"
+    }
   }
 }

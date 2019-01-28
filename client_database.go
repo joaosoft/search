@@ -71,6 +71,9 @@ func (client *databaseClient) Exec(searchData *searchData) (int, error) {
 	}
 
 	_, err = client.Load(searchData.object)
+	if err != nil {
+		return 0, err
+	}
 
 	// metadata
 	if searchData.hasMetadata {

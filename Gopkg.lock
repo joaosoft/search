@@ -58,7 +58,7 @@
   branch = "master"
   name = "github.com/joaosoft/elastic"
   packages = ["."]
-  revision = "e761a93d2a3c582819f50356049045947ab6c9b4"
+  revision = "07fd1a9683e77af0bfac67720bbef6725e640229"
 
 [[projects]]
   branch = "master"
@@ -70,7 +70,7 @@
   branch = "master"
   name = "github.com/joaosoft/logger"
   packages = ["."]
-  revision = "b245b1fd47dcf07bfac383551078de3c1d890de0"
+  revision = "3cb37169f05a408eca80c27e648861849c1d8449"
 
 [[projects]]
   branch = "master"
@@ -82,7 +82,7 @@
   branch = "master"
   name = "github.com/joaosoft/web"
   packages = ["."]
-  revision = "5b647e6319f5f6c3e86168566e105d9da920d623"
+  revision = "1d06d0f9e430d7436e6de5d19a0c5ad131974f9e"
 
 [[projects]]
   branch = "master"
@@ -93,8 +93,8 @@
 [[projects]]
   name = "github.com/labstack/echo"
   packages = ["."]
-  revision = "c7eb8da9ec73e78c4f38413f3f835e0cd52c7d72"
-  version = "v3.3.8"
+  revision = "739700bf4ef7f1dca5b111dec55114fc66207aaa"
+  version = "v3.3.9"
 
 [[projects]]
   name = "github.com/labstack/gommon"

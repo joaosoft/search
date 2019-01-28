@@ -16,5 +16,11 @@
     "log": {
       "level": "info"
     }
+  },
+  "elastic": {
+    "endpoint": "localhost:9200",
+    "log": {
+      "level": "error"
+    }
   }
 }
