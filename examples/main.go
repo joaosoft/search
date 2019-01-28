@@ -68,6 +68,24 @@ func SearchFromDatabase() {
 				OrderAsc("id_person"),
 			&[]Person{}).
 		MetadataFunction("my-function", myDatabaseMetadataFunction, &[]Person{}).
+		Fallback(searcher.NewElasticSearch(el.Search().
+			Index("persons").
+			Type("person")).
+			Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
+			Filters("first_name", "last_name").
+			SearchFilters("first_name", "last_name").
+			Search("joao").
+			Bind(&[]Person{}).
+			Path("http://teste.pt").
+			Page(1).
+			Size(3).
+			MaxSize(10).
+			Metadata("my-meta",
+				el.Search().
+					Index("persons").
+					Type("person"),
+				&[]Person{}).
+			MetadataFunction("my-function", myElasticMetadataFunction, &[]Person{})).
 		Exec()
 
 	if err != nil {
@@ -100,6 +118,25 @@ func SearchFromElastic() {
 				Type("person"),
 			&[]Person{}).
 		MetadataFunction("my-function", myElasticMetadataFunction, &[]Person{}).
+		Fallback(searcher.NewDatabaseSearch(
+			db.Select("*").
+				From("public.person").
+				OrderAsc("id_person")).
+			Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
+			Filters("first_name", "last_name").
+			SearchFilters("first_name", "last_name").
+			Search("joao").
+			Bind(&[]Person{}).
+			Path("http://teste.pt").
+			Page(1).
+			Size(3).
+			MaxSize(10).
+			Metadata("my-meta",
+				db.Select("*").
+					From("public.person").
+					OrderAsc("id_person"),
+				&[]Person{}).
+			MetadataFunction("my-function", myDatabaseMetadataFunction, &[]Person{})).
 		Exec()
 
 	if err != nil {

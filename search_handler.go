@@ -8,6 +8,10 @@ import (
 	"strconv"
 )
 
+type fallback interface {
+	Exec() (*searchResult, error)
+}
+
 type searchHandler struct {
 	client        searchClient
 	hasPagination bool
@@ -23,6 +27,7 @@ type searchHandler struct {
 	size          int
 	maxSize       int
 	object        interface{}
+	fallback      fallback
 }
 
 type metadataFunction func(result interface{}, object interface{}) error
@@ -141,6 +146,11 @@ func (searchHandler *searchHandler) Bind(object interface{}) *searchHandler {
 	return searchHandler
 }
 
+func (searchHandler *searchHandler) Fallback(fallback fallback) *searchHandler {
+	searchHandler.fallback = fallback
+	return searchHandler
+}
+
 func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 
 	if searchHandler.maxSize > 0 && searchHandler.size > searchHandler.maxSize {
@@ -162,6 +172,15 @@ func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 		metadata:      searchHandler.metadata,
 	}
 	total, err := searchHandler.client.Exec(searchData)
+
+	if err != nil {
+
+		if searchHandler.fallback == nil {
+			return nil, err
+		}
+
+		return searchHandler.fallback.Exec()
+	}
 
 	// metadata
 	var metadata map[string]interface{}
