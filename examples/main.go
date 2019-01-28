@@ -68,9 +68,10 @@ func SearchFromDatabase() {
 				OrderAsc("id_person"),
 			&[]Person{}).
 		MetadataFunction("my-function", myDatabaseMetadataFunction, &[]Person{}).
-		Fallback(searcher.NewElasticSearch(el.Search().
-			Index("persons").
-			Type("person")).
+		Fallback(searcher.NewElasticSearch(
+			el.Search().
+				Index("persons").
+				Type("person")).
 			Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
 			Filters("first_name", "last_name").
 			SearchFilters("first_name", "last_name").

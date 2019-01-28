@@ -58,7 +58,7 @@
   branch = "master"
   name = "github.com/joaosoft/elastic"
   packages = ["."]
-  revision = "07fd1a9683e77af0bfac67720bbef6725e640229"
+  revision = "ac6c4e575dea83dfc6a8fcef9803d3db11ca7b59"
 
 [[projects]]
   branch = "master"
@@ -93,8 +93,8 @@
 [[projects]]
   name = "github.com/labstack/echo"
   packages = ["."]
-  revision = "739700bf4ef7f1dca5b111dec55114fc66207aaa"
-  version = "v3.3.9"
+  revision = "38772c686c76b501f94bd6cd5b77f5842e93b559"
+  version = "v3.3.10"
 
 [[projects]]
   name = "github.com/labstack/gommon"

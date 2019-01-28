@@ -36,16 +36,17 @@ func (client *elasticClient) Exec(searchData *searchData) (int, error) {
 	}
 
 	// order by
+	sorts := make([]*elastic.SortField, 0)
 	for _, order := range searchData.orders {
 		switch order.direction {
 		case orderAsc:
-			//client.OrderAsc(order.column)
+			sorts = append(sorts, elastic.NewSortField(order.column, elastic.OrderAsc))
 		case orderDesc:
-			//client.OrderDesc(order.column)
+			sorts = append(sorts, elastic.NewSortField(order.column, elastic.OrderDesc))
 		}
 	}
 
-	if _, err := client.Object(searchData.object).Search(); err != nil {
+	if _, err := client.Object(searchData.object).Query(elastic.NewSort(sorts...)).Search(); err != nil {
 		return 0, err
 	}
 
