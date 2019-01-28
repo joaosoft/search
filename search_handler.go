@@ -9,7 +9,7 @@ import (
 )
 
 type fallback interface {
-	Exec() (*searchResult, error)
+	Exec() (*searchResult, []error)
 }
 
 type searchHandler struct {
@@ -151,7 +151,7 @@ func (searchHandler *searchHandler) Fallback(fallback fallback) *searchHandler {
 	return searchHandler
 }
 
-func (searchHandler *searchHandler) Exec() (*searchResult, error) {
+func (searchHandler *searchHandler) Exec() (*searchResult, []error) {
 
 	if searchHandler.maxSize > 0 && searchHandler.size > searchHandler.maxSize {
 		searchHandler.size = searchHandler.maxSize
@@ -176,10 +176,15 @@ func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 	if err != nil {
 
 		if searchHandler.fallback == nil {
-			return nil, err
+			return nil, []error{err}
 		}
 
-		return searchHandler.fallback.Exec()
+		if result, errFallback := searchHandler.fallback.Exec(); err != nil {
+			return nil, append(append([]error{}, err), errFallback...)
+		} else {
+			return result, nil
+		}
+
 	}
 
 	// metadata
@@ -202,7 +207,7 @@ func (searchHandler *searchHandler) Exec() (*searchResult, error) {
 		Result:     searchHandler.object,
 		Metadata:   metadata,
 		Pagination: pagination,
-	}, err
+	}, nil
 }
 
 func newPagination(searchData *searchData, total int) *pagination {
