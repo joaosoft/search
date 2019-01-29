@@ -15,16 +15,40 @@ func (search *Search) newElasticClient(stmt *elastic.SearchService) *elasticClie
 }
 
 func (client *elasticClient) Exec(searchData *searchData) (int, error) {
+	// query
+	terms := make([]elastic.Query, 0)
+	for key, value := range searchData.query {
+		terms = append(terms, elastic.NewTerm(key, value))
+	}
+	client.Query(elastic.NewBool().Must(terms...))
+
+	// search
+	lenQ := len(searchData.searchFilters)
+	if searchData.search != nil && lenQ > 0 {
+		queryString := elastic.NewQueryString(*searchData.search)
+		for _, filter := range searchData.searchFilters {
+			queryString.Fields(filter)
+		}
+		client.Query(queryString)
+	}
+
 	// pagination
+	total := 0
 	if searchData.hasPagination {
 		response, err := client.Count()
 		if err != nil {
 			return 0, err
 		}
 
+		if response.OnError != nil || response.OnErrorDocumentNotFound != nil {
+			return 0, nil
+		}
+
 		if response.Count == 0 {
 			return 0, nil
 		}
+
+		total = int(response.Count)
 	}
 
 	if searchData.size > 0 {
@@ -72,5 +96,5 @@ func (client *elasticClient) Exec(searchData *searchData) (int, error) {
 	}
 
 	_, err := client.Object(searchData.object).Search()
-	return 0, err
+	return total, err
 }

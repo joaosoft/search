@@ -1,7 +1,7 @@
 {
   "search": {
     "log": {
-      "level": "info"
+      "level": "error"
     }
   },
   "dbr": {
@@ -14,18 +14,18 @@
       "datasource": "postgres://user:password@localhost:7100/postgres?sslmode=disable&search_path=public"
     },
     "log": {
-      "level": "info"
+      "level": "error"
     }
   },
   "elastic": {
     "endpoint": "localhost:9201",
     "log": {
-      "level": "debug"
+      "level": "error"
     }
   },
   "client": {
     "log": {
-      "level": "debug"
+      "level": "error"
     }
   }
 }
