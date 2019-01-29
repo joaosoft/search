@@ -17,7 +17,7 @@ type Search struct {
 
 type searchResult struct {
 	Result     interface{} `json:"result"`
-	Metadata   interface{} `json:"metadata,omitempty"`
+	Metadata   interface{} `json:"Metadata,omitempty"`
 	Pagination *pagination `json:"pagination,omitempty"`
 }
 

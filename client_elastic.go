@@ -74,12 +74,12 @@ func (client *elasticClient) Exec(searchData *searchData) (int, error) {
 		return 0, err
 	}
 
-	// metadata
+	// Metadata
 	if searchData.hasMetadata {
 		for _, item := range searchData.metadata {
 			// function
 			if item.function != nil {
-				if err := item.function(reflect.ValueOf(searchData.object).Elem().Interface(), item.object); err != nil {
+				if err := item.function(reflect.ValueOf(searchData.object).Elem().Interface(), item.object, searchData.metadata); err != nil {
 					return 0, err
 				}
 			}

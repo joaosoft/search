@@ -21,7 +21,7 @@ type searchHandler struct {
 	search        *string
 	filters       map[string]string
 	searchFilters []string
-	metadata      map[string]*metadata
+	metadata      map[string]*Metadata
 	orders        orders
 	page          int
 	size          int
@@ -30,9 +30,9 @@ type searchHandler struct {
 	fallback      fallback
 }
 
-type metadataFunction func(result interface{}, object interface{}) error
+type metadataFunction func(result interface{}, object interface{}, metadata map[string]*Metadata) error
 
-type metadata struct {
+type Metadata struct {
 	stmt     interface{}
 	function metadataFunction
 	object   interface{}
@@ -44,7 +44,7 @@ func (search *Search) newSearchHandler(client searchClient) *searchHandler {
 		query:         make(map[string]string),
 		filters:       make(map[string]string),
 		searchFilters: make([]string, 0),
-		metadata:      make(map[string]*metadata),
+		metadata:      make(map[string]*Metadata),
 		hasPagination: true,
 		hasMetadata:   true,
 	}
@@ -100,14 +100,14 @@ func (searchHandler *searchHandler) WithoutMetadata() *searchHandler {
 
 func (searchHandler *searchHandler) Metadata(name string, stmt interface{}, object interface{}) *searchHandler {
 	if reflect.ValueOf(object).Kind() != reflect.Ptr {
-		panic(fmt.Sprintf("the object is not a pointer for the metadata %s", name))
+		panic(fmt.Sprintf("the object is not a pointer for the Metadata %s", name))
 	}
-	searchHandler.metadata[name] = &metadata{stmt: stmt, object: object}
+	searchHandler.metadata[name] = &Metadata{stmt: stmt, object: object}
 	return searchHandler
 }
 
 func (searchHandler *searchHandler) MetadataFunction(name string, function metadataFunction, object interface{}) *searchHandler {
-	searchHandler.metadata[name] = &metadata{function: function, object: object}
+	searchHandler.metadata[name] = &Metadata{function: function, object: object}
 	return searchHandler
 }
 
@@ -187,7 +187,7 @@ func (searchHandler *searchHandler) Exec() (*searchResult, []error) {
 
 	}
 
-	// metadata
+	// Metadata
 	var metadata map[string]interface{}
 	if searchHandler.hasMetadata {
 		metadata = make(map[string]interface{})

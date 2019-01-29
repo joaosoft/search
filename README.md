@@ -207,7 +207,7 @@ func SearchFromElastic() {
 	}
 }
 
-func myDatabaseMetadataFunction(result interface{}, object interface{}) error {
+func myDatabaseMetadataFunction(result interface{}, object interface{}, metadata map[string]*search.Metadata) error {
 	if result != nil {
 		if persons, ok := result.([]Person); ok && len(persons) > 0 {
 			_, err := db.Select("*").
@@ -221,7 +221,7 @@ func myDatabaseMetadataFunction(result interface{}, object interface{}) error {
 	return nil
 }
 
-func myElasticMetadataFunction(result interface{}, object interface{}) error {
+func myElasticMetadataFunction(result interface{}, object interface{}, metadata map[string]*search.Metadata) error {
 	if result != nil {
 		if persons, ok := result.([]Person); ok && len(persons) > 0 {
 			_, err := el.Search().

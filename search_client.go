@@ -16,5 +16,5 @@ type searchData struct {
 	page          int
 	size          int
 	object        interface{}
-	metadata      map[string]*metadata
+	metadata      map[string]*Metadata
 }
