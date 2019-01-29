@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"search"
 	"strconv"
+	"time"
 
 	"github.com/joaosoft/dbr"
 	"github.com/joaosoft/elastic"
@@ -34,14 +35,14 @@ func main() {
 	// with database
 	CleanDatabase()
 	FillDatatabase()
-	//<-time.After(5 * time.Second)
+	<-time.After(5 * time.Second)
 	SearchFromDatabase()
 	CleanDatabase()
 
 	// with elastic
 	CleanElastic()
 	FillElastic()
-	//<-time.After(5 * time.Second)
+	<-time.After(5 * time.Second)
 	SearchFromElastic()
 	CleanElastic()
 }
