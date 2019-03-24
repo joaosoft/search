@@ -5,6 +5,7 @@ import (
 	"github.com/joaosoft/elastic"
 	"github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
+	migration "github.com/joaosoft/migration/services"
 )
 
 type Search struct {
@@ -52,6 +53,18 @@ func New(options ...SearchOption) (*Search, error) {
 	}
 
 	search.Reconfigure(options...)
+
+	// execute migrations
+	if search.config.Migration != nil {
+		migrationService, err := migration.NewCmdService(migration.WithCmdConfiguration(search.config.Migration))
+		if err != nil {
+			return nil, err
+		}
+
+		if _, err := migrationService.Execute(migration.OptionUp, 0, migration.ExecutorModeDatabase); err != nil {
+			return nil, err
+		}
+	}
 
 	return search, nil
 }

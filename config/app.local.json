@@ -2,16 +2,29 @@
   "search": {
     "log": {
       "level": "error"
+    },
+    "migration": {
+      "path": {
+        "database": "schema/db/postgres"
+      },
+      "db": {
+        "schema": "search",
+        "driver": "postgres",
+        "datasource": "postgres://user:password@localhost:7000/postgres?sslmode=disable&search_path=search"
+      },
+      "log": {
+        "level": "info"
+      }
     }
   },
   "dbr": {
     "read_db": {
       "driver": "postgres",
-      "datasource": "postgres://user:password@localhost:7000/postgres?sslmode=disable&search_path=public"
+      "datasource": "postgres://user:password@localhost:7000/postgres?sslmode=disable&search_path=search"
     },
     "write_db": {
       "driver": "postgres",
-      "datasource": "postgres://user:password@localhost:7100/postgres?sslmode=disable&search_path=public"
+      "datasource": "postgres://user:password@localhost:7100/postgres?sslmode=disable&search_path=search"
     },
     "log": {
       "level": "error"

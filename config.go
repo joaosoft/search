@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/joaosoft/manager"
+	migration "github.com/joaosoft/migration/services"
 )
 
 // AppConfig ...
@@ -13,7 +14,8 @@ type AppConfig struct {
 
 // SearchConfig ...
 type SearchConfig struct {
-	Log struct {
+	Migration *migration.MigrationConfig `json:"migration"`
+	Log       struct {
 		Level string `json:"level"`
 	} `json:"log"`
 }

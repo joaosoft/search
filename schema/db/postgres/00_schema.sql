@@ -1,4 +1,8 @@
-CREATE TABLE address (
+-- migrate up
+
+CREATE SCHEMA IF NOT EXISTS search;
+
+CREATE TABLE search.address (
   id_address    SERIAL PRIMARY KEY,
   street        TEXT,
   number        INTEGER,
@@ -6,7 +10,7 @@ CREATE TABLE address (
 );
 
 
-CREATE TABLE person (
+CREATE TABLE search.person (
   id_person     SERIAL PRIMARY KEY,
   first_name    TEXT,
   last_name     TEXT,
@@ -15,14 +19,7 @@ CREATE TABLE person (
   fk_address    INTEGER REFERENCES address (id_address)
 );
 
-INSERT INTO address VALUES
-(1, 'rua dos testes', 1, 'portugal')
-;
 
-INSERT INTO person VALUES
-(1, 'a', 'aa', 30, true, 1),
-(2, 'b', 'bb', 31, true, 1),
-(3, 'c', 'cc', 32, true, 1),
-(4, 'd', 'dd', 33, true, 1),
-(5, 'e', 'ee', 34, true, 1)
-;
+-- migrate down
+DROP TABLE search.address;
+DROP TABLE search.person;

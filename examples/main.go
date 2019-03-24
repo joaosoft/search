@@ -51,7 +51,7 @@ func SearchFromDatabase() {
 
 	result, err := searcher.NewDatabaseSearch(
 		db.Select("*").
-			From("public.person").
+			From("search.person").
 			OrderAsc("id_person")).
 		Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
 		Filters("first_name", "last_name").
@@ -64,7 +64,7 @@ func SearchFromDatabase() {
 		MaxSize(10).
 		Metadata("my-meta",
 			db.Select("*").
-				From("public.person").
+				From("search.person").
 				OrderAsc("id_person"),
 			&[]Person{}).
 		MetadataFunction("my-function", myDatabaseMetadataFunction, &[]Person{}).
@@ -121,7 +121,7 @@ func SearchFromElastic() {
 		MetadataFunction("my-function", myElasticMetadataFunction, &[]Person{}).
 		Fallback(searcher.NewDatabaseSearch(
 			db.Select("*").
-				From("public.person").
+				From("search.person").
 				OrderAsc("id_person")).
 			Query(map[string]string{"first_name": "joao", "last_name": "ribeiro"}).
 			Filters("first_name", "last_name").
@@ -134,7 +134,7 @@ func SearchFromElastic() {
 			MaxSize(10).
 			Metadata("my-meta",
 				db.Select("*").
-					From("public.person").
+					From("search.person").
 					OrderAsc("id_person"),
 				&[]Person{}).
 			MetadataFunction("my-function", myDatabaseMetadataFunction, &[]Person{})).
@@ -154,7 +154,7 @@ func myDatabaseMetadataFunction(result interface{}, object interface{}, metadata
 	if result != nil {
 		if persons, ok := result.([]Person); ok && len(persons) > 0 {
 			_, err := db.Select("*").
-				From("public.person").
+				From("search.person").
 				Where("id_person = ?", persons[0].IdPerson).
 				OrderAsc("id_person").
 				Load(object)
@@ -187,7 +187,7 @@ func FillDatatabase() {
 		Country:   "portugal",
 	}
 	if _, err := db.Insert().
-		Into("public.address").
+		Into("search.address").
 		Record(address).Exec(); err != nil {
 		panic(err)
 	}
@@ -202,7 +202,7 @@ func FillDatatabase() {
 		}
 
 		if _, err := db.Insert().
-			Into("public.person").
+			Into("search.person").
 			Record(person).Exec(); err != nil {
 			panic(err)
 		}
@@ -214,12 +214,12 @@ func CleanDatabase() {
 	fmt.Println("\n\n:: DELETE")
 
 	if _, err := db.Delete().
-		From("public.person").Exec(); err != nil {
+		From("search.person").Exec(); err != nil {
 		panic(err)
 	}
 
 	if _, err := db.Delete().
-		From("public.address").Exec(); err != nil {
+		From("search.address").Exec(); err != nil {
 		panic(err)
 	}
 
@@ -236,7 +236,7 @@ func FillElastic() {
 		Country:   "portugal",
 	}
 	if _, err := db.Insert().
-		Into("public.address").
+		Into("search.address").
 		Record(address).Exec(); err != nil {
 		panic(err)
 	}
