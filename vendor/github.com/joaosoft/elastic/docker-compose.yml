@@ -1,0 +1,20 @@
+version: '3.1'
+services:
+
+  home.elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    container_name: home.elasticsearch
+    environment:
+      ES_JAVA_OPTS: '-Xms1024m -Xmx1024m'
+    volumes:
+      - "$HOME/docker/home/elastic:/usr/share/elasticsearch/data:rw"
+    ports:
+      - 9201:9200
+      - 9301:9300
+    networks:
+      default:
+        aliases:
+          - home.elasticsearch
+volumes:
+  esdata1:
+    driver: local
