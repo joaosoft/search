@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"search"
+	"github.com/joaosoft/search"
 	"strconv"
 	"time"
 
